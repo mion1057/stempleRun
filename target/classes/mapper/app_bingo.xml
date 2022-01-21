@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.app_bingoMapper">
+
+	<select id="bingogetCultures" parameterType="int" resultType="com.stempleRun.db.dto.App_bingo">
+		select a.b_num, a.c_num, a.b_order, b.c_name
+		from bingo_only a, cultural b
+		where
+		a.c_num = b.c_num and b_num = #{b_num}
+		order by b_order
+	</select>
+	
+<!-- 	<update id="change"> -->
+<!-- 		update bingo_only set c_num = #{c_num} where b_order = #{b_order} and b_num = #{b_num} -->
+<!-- 	</update> -->
+
+	<!-- 빙고수정 삭제 -->
+	<delete id="changedelete" parameterType="int">
+        DELETE FROM bingo_only WHERE b_num = #{b_num}
+    </delete>
+    
+	<select id="getBingolist" resultType="com.stempleRun.db.dto.app_bingolist">
+		select b_num, b_title, b_content, b.area_num, a.area_name
+		from bingo b, area a
+		where b.area_num = a.area_num
+	</select>
+</mapper>

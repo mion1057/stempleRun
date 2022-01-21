@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.SpotMapper">
+	<select id="getPictures" resultType="com.stempleRun.db.dto.Picture">
+		select * from picture
+	</select>
+	<select id="getUserHost" resultType="com.stempleRun.db.dto.Member">
+		select m_id from member where m_id = #{m_id}
+	</select>
+	<select id="getUserBingo" resultType="com.stempleRun.db.dto.app_bingolist">
+		select a.b_title, a.b_content, d.area_name
+		from bingo a, member c, area d
+		where m_id = #{m_id}
+		and a.area_num = d.area_num
+	</select>
+	<select id = "getUserStory" resultType="com.stempleRun.db.dto.app_story">
+		select a.s_title, a.s_content, b.s_progress, d.area_name, d.area_num
+		from story a, story_comp b, member c, area d
+		where a.s_num = b.s_num
+        and a.area_num = d.area_num
+        and m_id = #{m_id}
+		and s_complete = 0
+	</select>	
+	<select id="getWeekly" resultType="com.stempleRun.db.dto.Spot">
+	<![CDATA[select rank() over (order by p_recommend desc) as rk, p.p_num, p.p_title, p.p_day, p.p_recommend, l.pic_latitude, l.pic_longitude, c.m_id
+from post p ,picture l, member c
+where p.pic_num = l.pic_num  
+and p.p_day between sysdate - to_char(sysdate,'d')-3 and sysdate-to_char(sysdate,'d')+4
+and m_id = #{m_id}
+order by p_recommend desc]]>
+	</select>
+	<select id="getMonthly" resultType="com.stempleRun.db.dto.Spot">
+	<![CDATA[select rank() over (order by p_recommend desc) as rk, p.p_num, p.p_title, p.p_day, p.p_recommend, l.pic_latitude, l.pic_longitude, c.m_id
+from post p ,picture l, member c
+where p.pic_num = l.pic_num  
+and substr(p_day,4,2)=to_char(sysdate,'mm')
+and m_id = #{m_id}
+order by p_recommend desc]]>
+	</select>
+	
+</mapper>

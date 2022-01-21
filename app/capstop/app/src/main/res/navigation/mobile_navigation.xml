@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_story_area">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.myapplication.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.example.myapplication.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_nav_gallery_to_addPhotoFragment"
+            app:destination="@id/addPhotoFragment" />
+        <action
+            android:id="@+id/action_nav_gallery_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_bingo"
+        android:name="com.example.myapplication.ui.bingo.BingoareaFragment"
+        android:label="@string/menu_bingo"
+        tools:layout="@layout/fragment_bingo_area"/>
+
+    <fragment
+        android:id="@+id/nav_bingolist"
+        android:name="com.example.myapplication.ui.bingo.BingolistFragment"
+        android:label="@string/menu_bingo"
+        tools:layout="@layout/fragment_bingo_list">
+        <action
+            android:id="@+id/action_nav_bingolist_to_nav_bingobuttonlist"
+            app:destination="@id/nav_bingobuttonlist"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_bingobuttonlist"
+        android:name="com.example.myapplication.ui.bingo.BingoareaFragment"
+        android:label="@string/menu_bingo"
+        tools:layout="@layout/fragment_bingo_area"/>
+
+
+    <fragment
+        android:id="@+id/nav_hotspot"
+        android:name="com.example.myapplication.ui.hotspot.HotspotFragment"
+        android:label="fragment_hotspot"
+        tools:layout="@layout/fragment_hotspot" />
+    <fragment
+        android:id="@+id/nav_idea"
+        android:name="com.example.myapplication.ui.idea.IdeaFragment"
+        android:label="fragment_idea"
+        tools:layout="@layout/fragment_idea" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.myapplication.ui.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/nav_review"
+        android:name="com.example.myapplication.ui.review.ReviewFragment"
+        android:label="리뷰게시판"
+        tools:layout="@layout/fragment_review" >
+        <action
+            android:id="@+id/action_nav_review_to_nav_reviewDetail"
+            app:destination="@id/nav_reviewDetail" />
+        <action
+            android:id="@+id/action_nav_review_to_nav_reviewReg"
+            app:destination="@id/nav_reviewReg" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_story_start"
+        android:name="com.example.myapplication.ui.story.StoryStartFragment"
+        android:label="스토리 길잡이"
+        tools:layout="@layout/fragment_story_start" >
+        <action
+            android:id="@+id/action_nav_story_start_to_nav_story_end"
+            app:destination="@id/nav_story_end"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_story_end"
+        android:name="com.example.myapplication.ui.story.StoryEndFragment"
+        android:label="스토리 길잡이"
+        tools:layout="@layout/fragment_story_end"
+        />
+
+    <fragment
+            android:id="@+id/nav_story_area"
+        android:name="com.example.myapplication.ui.story.StoryareaFragment"
+        android:label="스토리 길잡이"
+        tools:layout="@layout/fragment_story_area" >
+        <action
+            android:id="@+id/action_nav_storyarea_to_nav_story_list"
+            app:destination="@id/nav_story_list" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_story_list"
+        android:name="com.example.myapplication.ui.story.StoryListFragment"
+        android:label="스토리 길잡이"
+        tools:layout="@layout/fragment_storylist" >
+        <action
+            android:id="@+id/action_nav_storyList_to_nav_storyInfo"
+            app:destination="@id/nav_storyInfo" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_storyInfo"
+        android:name="com.example.myapplication.ui.story.StoryInfoFragment"
+        android:label="스토리 길잡이"
+        tools:layout="@layout/fragment_storyinfo">
+        <action
+            android:id="@+id/action_nav_storyInfo_to_nav_story_start"
+            app:destination="@id/nav_story_start" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPhotoFragment"
+        android:name="com.example.myapplication.ui.gallery.AddPhotoFragment"
+        android:label="fragment_add_photo"
+        tools:layout="@layout/fragment_add_photo" />
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.myapplication.ui.gallery.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" />
+
+    <fragment
+        android:id="@+id/nav_signup"
+        android:name="com.example.myapplication.ui.signup.SignUpFragment"
+        android:label="회원가입"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/nav_reviewDetail"
+        android:name="com.example.myapplication.ui.review.ReviewDetailFragment"
+        android:label="리뷰게시판"
+        tools:layout="@layout/fragment_reviewdetail" />
+    <fragment
+        android:id="@+id/nav_reviewReg"
+        android:name="com.example.myapplication.ui.review.ReviewRegFragment"
+        android:label="리뷰게시판"
+        tools:layout="@layout/fragment_reviewreg" />
+
+</navigation>

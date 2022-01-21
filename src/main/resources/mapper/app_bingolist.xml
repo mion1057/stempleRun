@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.app_BingoListMapper">
+
+	<select id="getBingoList" resultType="com.stempleRun.db.dto.app_bingolist">
+		select b_num, b_title, b_content, b.area_num, a.area_name
+		from bingo b, area a
+		where b.area_num = a.area_num
+	</select>
+	
+</mapper>

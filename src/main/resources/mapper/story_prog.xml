@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.Story_progMapper">
+	
+	<insert	id="reg">
+		insert into story_prog values(#{m_num}, #{s_num}, #{c_num}, #{s_c_complete})
+	</insert>
+	
+	<select id="count" resultType="Integer">
+		select count(*) from story_prog where s_num = #{s_num} and S_C_COMPLETE = 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.App_MemberMapper">
+
+	<insert id="appSignUp" parameterType="com.stempleRun.db.dto.App_MemberVO">	
+    	insert into member
+    	values (member_seq.nextval, #{m_id, jdbcType=VARCHAR}, #{m_pw, jdbcType=VARCHAR}, #{m_name, jdbcType=VARCHAR}, #{m_email, jdbcType=VARCHAR}, 1)
+    </insert>
+    
+    <select id="getIdList" resultType= "String" parameterType="com.stempleRun.db.dto.App_MemberVO">
+    	select m_id from member where m_id = #{m_id}
+    </select>
+
+	<select id="appAutoLoginCheck" resultType="com.stempleRun.db.dto.App_MemberVO">
+		select * from member where m_id = #{m_id} and m_pw = #{m_pw}
+	</select>
+
+	<select id="app_getMember" resultType="com.stempleRun.db.dto.App_MemberVO">
+		select * from member where m_id=#{m_id}
+	</select>
+
+</mapper>

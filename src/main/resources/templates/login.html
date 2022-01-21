@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Login</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="/css/login.css" />
+<header th:replace="include/header"></header>
+</head>
+
+<body>
+		<!-- Hero Slider -->
+	<section class="bg-cencer bg-cover"
+		style="background: url(/img/mainphoto/login.jpg);">
+		<div class="dark-overlay">
+			<div class="overlay-content py-5 index-forward">
+				<div class="container py-5 mt-5">
+					<div class="row py-1 text-white text-center">
+						<div class="col-lg-7 mx-auto">
+							<h1 class="text-xl">로그인</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	 <section>
+		<div>
+			<div class="overlay-content py-1 index-forward">
+				<div class="container py-1 mt-5">
+					<div class="row py-1 text-white text-center"></div>
+				</div>
+			</div>
+		</div>
+	</section> 
+
+	<section>
+		<div class="wrapper fadeInDown zero-raduis">
+			<div id="formContent">
+
+				<div class="fadeIn first">
+					<!-- <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon"alt="User Icon" /> -->
+					<h2 class="my-5">LOGIN</h2>
+				</div>
+
+				<form th:action="@{/login}" method="post" >
+					<input type="name" class="fadeIn second zero-raduis" placeholder="ID" name="username"> <br>
+					<input type="password"  class="fadeIn second zero-raduis"placeholder="PASSWORD" name="password"> 
+					<!-- <div id="formFooter">
+					<a class="underlineHover" href="/member/signup">회원가입</a>
+					</div> -->
+					<input type="submit" class="fadeIn fourth zero-raduis" value="Login">
+					<h5>먼저 회원가입이 필요해요 :)</h5>
+					<p><span class="icon icon--info"></span><a href="/member/signup">회원가입</a></p> 
+				</form>
+			</div>
+	</section>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stemplerun.db.mapper.App_MypageMapper">
+	<select id="getUserHost" resultType="com.stemplerun.db.dto.Member">
+	 select m_id from member where m_id = #{m_id}
+	</select>
+	<select id="getUserStory" resultType="com.stemplerun.db.dto.app_story">
+	 select a.s_title, a.s_content, b.s_complete, b.s_complete, b,s_progress, d.area_num
+	 from story a, story_comp b, member c, area d
+	 where m_id = #{m_id}
+	 and a.s_num = b.s_num
+	 and a.area_num = d.area_num
+	 and s_complete = 0
+	</select>
+	<select id="getUserBingo" resultType="com.stemplerun.db.dto.app_bingolist">
+	 select a.b_title, a.b_content, b.b_complete, b.b_progress, d.area_name
+	 from bingo a, bingo_comp b, member c, area d
+	 where m_id = #{m_id}
+	 and a.area_num = d.area_num
+	 and b_complete = 0
+	</select>
+	<select id="getWeekly" resultType="com.stemplerun.db.dto.Spot">
+	 select rank() over (order by p_recommend desc) as rk, p.p_num, p.p_title, p.p_day
+	</select>
+	
+</mapper>

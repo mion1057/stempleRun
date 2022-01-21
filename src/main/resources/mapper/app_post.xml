@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stempleRun.db.mapper.App_PostMapper">
+	
+	<!-- 사진마당 리스트 -->
+	<select id="getPostInfo" resultType="com.stempleRun.db.dto.PostVO">
+		select a.p_title, a.p_day, a.p_recommend, a.p_num, b.m_name, b.m_id, c.pic_file, c.pic_latitude, c.pic_longitude
+		from post a, member b, picture c 
+		where a.pic_num = c.pic_num and b.m_num = c.m_num
+	</select>
+	
+	<!-- 사진마당 인기순 -->
+	<select id="getPopInfo" resultType="com.stempleRun.db.dto.PostVO">
+		select a.p_title, a.p_day, a.p_recommend, b.m_name, c.pic_file, c.pic_latitude, c.pic_longitude
+		from post a, member b, picture c 
+		where a.pic_num = c.pic_num and b.m_num = c.m_num order by p_recommend desc
+	</select>
+	
+	<!-- 사진마당 최신순 -->
+	<select id="getLatestInfo" resultType="com.stempleRun.db.dto.PostVO">
+		select a.p_title, a.p_day, a.p_recommend, b.m_name, c.pic_file, c.pic_latitude, c.pic_longitude
+		from post a, member b, picture c 
+		where a.pic_num = c.pic_num and b.m_num = c.m_num order by p_day desc
+	</select>
+	
+	<!-- 사진마당 게시글 상세보기 -->
+	<select id="getPostInfos" parameterType="int" resultType="com.stempleRun.db.dto.PostVO">
+		select a.p_title, a.p_day, b.m_name, c.pic_latitude, c.pic_longitude 
+		from post a, member b, picture c 
+		where a.m_num = b.m_num and a.pic_num = c.pic_num and a.p_num = #{p_num}
+	</select>
+	
+	<!-- 추천 테이블에 포스트번호 회원아이디 넣기 -->
+	<insert id="getAppReco" parameterType="com.stempleRun.db.dto.RecommendVO">
+		insert into recommend values (#{p_num}, #{m_id})
+	</insert>
+	
+	<!-- 추천 테이블 포스트번호 세기  == 추천갯수 -->
+	<select id="appCountReco" resultType="int">
+		select count(*) from recommend where p_num = #{p_num}
+	</select>
+	
+	<!-- 포스트테이블 추천수 증가 -->
+	<update id="appRecommend">
+		update post set p_recommend = p_recommend +1 where p_num = #{p_num}
+	</update>
+	
+	<!-- 추천테이블 데이터 받아오기 -->
+	<select id="appCheckReco" parameterType="com.stempleRun.db.dto.RecommendVO">
+		select p_num, m_id from recommend
+	</select>
+	
+	<!-- 앱에서 게시글 등록 -->
+	<insert id="appInsertPost" parameterType="com.stempleRun.db.dto.PostVO">
+		insert into post 
+		values(post_seq.nextval, #{p_title}, #{p_content}, #{p_day}, 0, null, 1, 1, 101, '서울');
+	</insert>
+</mapper>

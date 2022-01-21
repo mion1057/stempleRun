@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="include/headShare">
+<meta charset="UTF-8">
+<header th:replace="include/header"></header>
+ <link href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Do+Hyeon|Jua|Nanum+Gothic|Sunflower:300" rel="stylesheet">
+ <style>
+ 	/* .map_btn {
+ 		 border:1px solid skyblue; 
+ 		 background-color:skyblue; 
+ 		 color:white; 
+ 		 border-top-right-radius:5px; 
+ 		 border-top-left-radius:5px; 
+ 		 border-bottom-right-radius:5px;
+ 		 border-bottom-left-radius:5px;
+ 		 width:80px; 
+ 		 height:20px; 
+ 		 font-size:12px; 
+ 		 font-weight:bold;
+ 	}
+ 	.map_btn:hover {
+		color:skyblue;
+		background-color:white; 	
+ 	} */
+	.customoverlay {display:display;position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+	.customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+	.customoverlay .id_div {height:50px;display:display;text-decoration:none;color:#000;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;}
+	.customoverlay .title {display:inline;background:#fff;padding:16px 15px;font-size:14px;font-weight:bold;}
+	.customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+	.customoverlay button {height:50px;background:skyblue; color:white; font-weight:bold; border:0;}
+	.customoverlay button:hover {color:skyblue; background-color:white;}
+	
+	.w{
+	float: right;
+	width: 320px;
+    padding: 0.2rem 0.2rem;
+    font-size: 1rem;
+    line-height: 0.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	}
+	
+ </style>
+</head>
+
+<body>
+	<!-- Hero Slider -->
+	<section class="bg-cencer bg-cover"
+		style="background: url(/img/mainphoto/1.jpg);">
+		<div class="dark-overlay">
+			<div class="overlay-content py-5 index-forward">
+				<div class="container py-5 mt-5">
+					<div class="row py-1 text-white text-center">
+						<div class="col-lg-7 mx-auto">
+							<h1 class="text-xl">스토리 길잡이</h1>
+							<p class="lead">다양한 스토리를 이용한 문화재에 대해 알아볼까요?</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="py-5">
+		<!-- 지도 -->
+		<div class="container py-2" id="map" style="width: 1920px; height: 450px;"></div>
+
+		<form method="POST" id="form" enctype="multipart/form-data"
+			action="/storymake/test">
+
+			<div class="h3" style="text-align: center ">
+			<br>
+				<label> <p style="font-family: 'Nanum Gothic', sans-serif;">현재 스토리 : </p></label>
+				<label th:if="${nowStory != null}" id="storytitle" name="storytitle" th:text=${nowStory.s_title}></label>
+				<label th:unless="${nowStory != null}" id="storytitle" name="storytitle" th:text='없음'>
+				
+				<input id="s_num" type="hidden" th:value=${nowStory.s_num}></label>
+				
+				<input th:if="${nowStory != null}" id="s_num" name="s_num" type="hidden" th:value=${nowStory.s_num}>
+				<input th:unless="${nowStory != null}" id="s_num" name="s_num" type="hidden" th:value="없음">
+			</div>
+
+			<!-- 문화재 목록 -->
+			<div class="container " id="culture_list" style="text-align: center">
+			<button type="button" class="btn btn-outline-secondary btn-sm float-right" id="loadStory" data-toggle="modal" data-target="#exampleModalLong">스토리 불러오기</button><br><br>
+<!-- 			<div style="margin-left:150px"> -->
+<!-- 				<br> -->
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col-md-2 "> -->
+
+<!-- 						<br> <label for="reg_id">문화재 목록</label> -->
+<!-- 						<button type="button" id="reset" class="btn btn-outline-secondary btn-sm">초기화</button -->
+<!-- 						<hr> -->
+<!-- 					</div> -->
+<!-- 					<br> -->
+<!-- 					<div id="addList" name="addList"></div> -->
+
+
+<!-- 					문제등록 -->
+<!-- 					<div style="text-align: center" class="col-md-3"> -->
+<!-- 						<br> <label for="content">문제등록</label> -->
+<!-- 						<hr> -->
+<!-- 						<br> -->
+<!-- 						<div id="addQuestion" name="addQuestion"></div> -->
+<!-- 					</div> -->
+
+<!-- 					힌트등록 -->
+<!-- 					<div style="text-align: center" class="col-md-3"> -->
+<!-- 						<br> <label for="         content">힌트등록</label> -->
+<!-- 						<hr> -->
+<!-- 						<br> -->
+<!-- 						<div id="addHint" name="addHint"></div> -->
+<!-- 					</div> -->
+<!-- 					나레이션 -->
+<!-- 					<div style="text-align: center" class="col-md-4"> -->
+<!-- 						<br> <label for="content">나레이션등록</label> -->
+<!-- 						<hr> -->
+<!-- 						<div id="addNarration" name="addNarration"></div> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- 				</div> -->
+				
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col-xs-6 col-sm-3"  id="add_c_div"></div> -->
+<!-- 					<div class="col-xs-6 col-sm-3"  id="add_q_div"></div> -->
+<!-- 					<div class="col-xs-6 col-sm-3"  id="add_h_div"></div> -->
+<!-- 					<div class="col-xs-6 col-sm-3" id="add_n_div"></div> -->
+<!-- 				</div> -->
+				
+				<!-- 만약 등록에서 관리로 넘어왓다면 테이블 head만 만들기-->
+				<table th:if="${data == null}" id="table_list" class="table">
+					 <tr>
+					 	<th>순서</th> 
+					 	<th>문화재</th>
+					 	<th>문제</th>
+					 	<th>힌트</th>
+					 	<th>나레이션</th>
+					 </tr>
+				</table>
+				
+				<!-- 만약 목록에서 스토리를 하나 선택해서 넘어왓다면 선택한 스토리에 해당하는 setting 해주기 -->
+				<table  th:unless="${data == null}" id="table_list" class="table">
+					 <tr>
+					 	<th>순서</th>
+					 	<th>문화재</th>
+					 	<th>문제</th>
+					 	<th>힌트</th>
+					 	<th>나레이션</th>
+					 </tr>
+					 
+					 <input id="c_count" name="count" type="hidden" th:value="${data.size()}">
+					 
+ 					 <tr th:each="table_data:${data}" th:id="tr + ${table_data.s_order}">
+ 					 	<td th:text="${table_data.s_order}"></td>
+ 					 	<td th:text="${table_data.c_name}"></td>
+ 					 	<td th:text="${table_data.q_content}"></td>
+ 					 	<td th:if="${table_data.h_content != '없음'}" th:text="${table_data.h_content}"></td>
+ 					 	<td th:unless="${table_data.h_content != '없음'}" th:text="${table_data.h_file}"></td>
+ 					 	<td th:text="${table_data.s_file}"></td>
+ 					 	<td><button type="button" class="btn btn-outline-secondary btn-sm float-right" th:id="modify + ${table_data.s_order}" th:value="${table_data.s_order}" data-toggle="modal" data-target="#exampleModal">수정</button></td>
+ 					 </tr>
+				</table>
+				
+				
+				<div th:if="${data == null}" id="real_data"></div>
+				
+				<div th:unless="${data == null}"  id="real_data">
+					<div th:each="real_data:${data}" th:id="real_data_ + ${real_data.s_order}">
+						<input th:id="q_real_data_+${real_data.s_order}" th:name="q_real_data_+${real_data.s_order}" type="hidden" th:value="${real_data.q_content}">
+						
+						<input th:if="${real_data.h_content} != '없음'" th:id="h_t_real_data_ + ${real_data.s_order}" th:name="h_t_real_data_ + ${real_data.s_order}" type="hidden" th:value="${real_data.h_content}">
+						<input th:unless="${real_data.h_content} != '없음'" th:id="h_t_real_data_ + ${real_data.s_order}" th:name="h_t_real_data_ + ${real_data.s_order}" type="hidden" value="">
+						
+						<input th:if="${real_data.h_file} != '없음'" th:id="h_f_real_data_ + ${real_data.s_order}" th:name="h_file" type="file" value="" onchange="changeText(this)" style="display:none;">
+						<input th:unless="${real_data.h_file} != '없음'" th:id="h_f_real_data_ + ${real_data.s_order}" th:name="h_file" type="file" value="" onchange="changeText(this)" style="display:none;">
+						
+						<input th:id="n_real_data_+ ${real_data.s_order}" name="n_file" type="file" value="" onchange="changeText(this)" style="display:none;">
+						<input th:id="culturalId + ${real_data.s_order}" th:name="c_name + ${real_data.s_order}" type="hidden" th:value="${real_data.c_name}">
+						
+						<input th:id="h_fileName + ${real_data.s_order}" type="hidden" th:value="${real_data.h_file}">
+						<input th:id="n_fileName + ${real_data.s_order}" type="hidden" th:value="${real_data.s_file}">
+						
+					</div>
+				</div>
+
+				
+<!-- 				<div id="c_list"> -->
+<!-- 					<input type="hidden" value="0" id="call_check"> -->
+<!-- 				</div> -->
+
+				<div>
+					<button type="button" class="btn btn-primary float-right" id="save">저장</button>
+					<button type="button" id="reset" class="btn btn-primary float-left mr-1">초기화</button>
+					<button type="button" class="btn btn-primary float-left" id="delete">삭제</button>
+					<button type="button" class="btn btn-secondary float-right float-right mr-1" id="cancel">취소</button>
+				
+					<!--    <button type="button">미리보기</button> -->
+					<!-- <button type="button" class="btn btn-primary float-left" id="loadStory" data-toggle="modal" data-target="#exampleModalLong">스토리 불러오기</button> -->
+				</div>
+			</div>
+		</form>
+
+<!-- 		스토리 불러오기 모달 -->
+		<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLongTitle">스토리 불러오기</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="load_modal_body">
+						<form method="POST" style="padding-left: 20px;"></form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 문화재 등록 Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+      		<div class="modal-header">
+        		<h5 class="modal-title" id="exampleModalLabel">문화재 등록</h5>
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          		<span aria-hidden="true">&times;</span>
+        		</button>
+      		</div>
+      		<div class="modal-body" id="reg_modal_body">
+      			<input id="c_name" type="hidden">
+      			<form method="POST">
+<!--       			 요기 -->
+      				<table class="table" style="width:600px; height:600px">
+      					<tr>
+      						<th style="text-align: center;"><label style="font-weight:bold;">문제</label></th>
+      						<th><input id="question" type="text" class="w" placeholder="문제를 입력해주세요"><br><br></th>
+      					</tr>
+      					<tr>
+      						<th style="text-align: center;"><label style="font-weight:bold;">힌트</label></th>
+      						<th style="text-align: left;">
+      							&nbsp; &nbsp; &nbsp;
+      							<input type="radio" name="check_hint" value="text" checked>
+      							<input id="hint_text" type="text"  class="w" placeholder="힌트를 입력해주세요"><br>
+      							<br> &nbsp; &nbsp; &nbsp;
+      							<input type="radio" name="check_hint" value="file">
+      							 &nbsp; &nbsp; &nbsp; &nbsp;  
+      							 <button type="button" id="h_button">파일 선택</button><label id="h_label" style="float:right;">선택된 파일 없음</label> <!-- <input id="hint_file" type="file"> -->
+      						</th>
+      					</tr>
+      					<tr>
+      						<th style="text-align: center;"><br><label style="font-weight:bold;">나레이션</label></th>
+      						<th style="text-align: left;">
+      						<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+      						<button type="button" id="n_button">파일 선택</button><label id="n_label" style="float:right;">선택된 파일 없음</label><!-- <input id="narration" type="file"><br> --></th>
+      					</tr>
+      				</table>
+      			</form>
+      		</div>
+      		
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+        		<button id="c_reg" type="button" class="btn btn-primary">저장</button>
+      		</div>
+    		</div>
+  		</div>
+		</div>
+	</section>
+</body>
+
+<script
+	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4f9c5b41cdef9519134cf34d948fca04&libraries=clusterer"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.js"></script> -->
+
+
+<script th:inline="javascript">
+	
+		var data = [[${cultureList}]];
+		
+		console.log(data);
+		
+		
+		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+		mapOption = {
+			center : new kakao.maps.LatLng(35.896285, 128.622003), // 지도의 중심좌표
+			level : 5
+		// 지도의 확대 레벨
+		};
+	
+		var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+		
+		// 마커 클러스터러를 생성합니다 
+	    var clusterer = new kakao.maps.MarkerClusterer({
+	        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+	        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+	        minLevel: 10 // 클러스터 할 최소 지도 레벨 
+	    });
+		
+		
+		// 마커들을 클러스터러로 묶기위한 변수
+		var markers = [];
+	
+		
+		
+		
+		var imageSrc = '/img/marker/marker.png', // 마커이미지의 주소입니다    
+	    imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+	    imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+		
+		
+	 
+	    
+		// 미리 저장되어있는 마커들을 불러오는 for문
+		for(var i=0; i < data.length; i++) {
+			
+			
+			// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+		    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+		        markerPosition = new kakao.maps.LatLng(data[i].c_latitude, data[i].c_longitude); // 마커가 표시될 위치입니다
+			
+		     // 마커를 생성합니다
+		        var marker = new kakao.maps.Marker({
+		          position: markerPosition,
+		          image: markerImage // 마커이미지 설정 
+		        });    
+		        
+			
+// 			// 지도를 클릭한 위치에 표출할 마커입니다
+// 			var marker = new kakao.maps.Marker({
+// 				// 마커를 생성합니다 
+// 				position: new kakao.maps.LatLng(data[i].c_latitude, data[i].c_longitude),
+// 				map: map
+// 			});
+			
+
+			// 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+			var content = `<div class="customoverlay">
+							<div class="id_div">
+							<span class="title">${data[i].c_name}</span><button id="map_btn" type="button"class="map_btn" data-toggle="modal"  data-whatever="${data[i].c_name}" onClick="c_update('${data[i].c_name}')">등록</button></div>
+							</div>`;
+
+			// 커스텀 오버레이가 표시될 위치입니다 
+			var position = new kakao.maps.LatLng(data[i].c_latitude, data[i].c_longitude);  
+
+			// 커스텀 오버레이를 생성합니다
+			var customOverlay = new kakao.maps.CustomOverlay({
+    			map: map,
+    			position: position,
+    			content: content,
+    			yAnchor: 1 
+			});
+			
+	
+			
+// 			// 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성합니다
+// 			var iwContent =`<div style="font-size:15px; text-align:center; font-weight:bold; padding-top:10px;">${data[i].c_name}</div>
+// 							<div style="width:150px; text-align:center; padding:5px;">
+// 								<button id="map_btn" type="button" value="1234" class="map_btn" data-toggle="modal"  data-whatever="${data[i].c_name}" onClick="c_update('${data[i].c_name}')">등록하기</button>
+// 							</div>`, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+// 			    iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+// 			// 인포윈도우를 생성합니다
+// 			var infowindow = new kakao.maps.InfoWindow({
+// 			    content : iwContent,
+// 			    removable : iwRemoveable
+// 			});
+
+			 
+			
+			// 마커 클러스터러에 마커들 담기
+			markers.push(marker, customOverlay);
+			
+			//markers.push(customOverlay);
+			// 마커 클릭 시 인포윈도우 표시
+			//kakao.maps.event.addListener(marker, 'click', clickListener(map, marker, customOverlay));
+			
+		}
+		
+		// 클러스터러에 마커들을 추가합니다
+        clusterer.addMarkers(markers);
+       
+//      	// 마커에 클릭이벤트를 등록합니다
+// 		function clickListener(map, marker, infowindow) {
+//     		return function() {
+//     			// 마커 위에 인포윈도우를 표시합니다
+//   		      infowindow.open(map, marker);
+//     		};
+// 		}
+     	
+     	
+     	
+     	// update로 스토리 불러왔으면 1, reg에서 넘어왔으면 0
+     	var call_check = 0;
+     	
+     	// 문화재 중복인지 체크할 배열
+		var c_nameList = new Array();
+     	
+     	if([[${data}]] == null) {
+     		alert("reg에서 넘어오거나 주소창에 manage 치고 왔다");
+     		call_check = 0;
+     		alert("call_check : " + call_check);
+     	}
+     	else {
+     		var list_data = [[${data}]];
+     		
+     		alert("목록에서 넘어옴");
+     		call_check = 1;
+     		alert("call_check : " + call_check);
+     		
+     		alert("리스트에서 넘어올떄 data길이 : " + [[${data}]].length);
+     		
+     		for(var i=0; i<[[${data}]].length; i++) {
+     			c_nameList.push(list_data[i].c_name);
+     			console.log(c_nameList[i]);
+     		}
+     	}
+     	
+     	console.log("update로 스토리 불러왔으면 1, reg에서 넘어왔으면 0 : " + call_check);
+     	
+		
+		
+		
+		
+		// 해당 스토리에 문화재 등록하는 function
+		function c_update(name) {
+			
+			console.log("등록하기 click : " + name);
+			console.log("등록하기 click : " + c_nameList.length);
+			var c_name = document.getElementById("c_name");
+			c_name.value = name;
+			
+ 			var story = document.getElementById('s_num');
+			
+ 			
+ 			// 스토리 미 선택시 리턴
+ 			if(story.value == "없음") {
+ 				alert("스토리를 선택해주세요");
+ 				return;
+ 			}
+			
+ 			
+ 			// 중복된 문화재면 alert, 아니라면 modal창
+ 			if(c_nameList.indexOf(name) != -1) {
+ 				
+				alert("이미 등록된 문화재입니다.");
+				return;
+			}
+			else {
+				add_real_data();
+				
+				console.log("비교 : " + name + ", " + c_nameList[0]);
+				
+				// jQuery에 있는 모달창 수동으로 띄우는 함수
+				c_updateFunc();
+			}
+			
+			
+			
+			
+			
+			//document.getElementById("map_btn").
+			
+// 			//var add = '';
+// 			var c_dataStorage = '';
+// 			var q_dataStorage = '';
+// 			var h_dataStorage = '';
+// 			var n_dataStorage = '';
+			
+// 			if(count == 1) {
+// 				//add = `<input id="c_count" name="count" type="hidden" value="${count}">`;
+// 				c_dataStorage = `<input id="c_count" name="count" type="hidden" value="${count}">`;
+// 			}
+// 			else {
+// 				var hiddenCount = document.getElementById('c_count');
+				
+// 				hiddenCount.setAttribute('value', count);
+// 			}
+			
+			
+// // 			add += `<label id="c_num${count}"> &nbsp&nbsp&nbsp&nbsp&nbsp ${count} 번째 문화재</label> <button type="button" id="c_Button${count}" name="c_${count}" value="${name}">${name}</button>        
+// // 						<label id="q_num${count}">${count}번 문제 :</label> <input id="q_input${count}" name="q_input${count}" type="text" placeholder="문제를 입력해주세요">
+// // 						<label id="h_num${count}">${count}번 힌트 :</label> <button id="textButton${count}" type="button" value="${count}" name="textButton">텍스트</button> <input id="fileButton${count}" type="file" value="${count}" name="h_file">
+// // 						<input id="narrationButton${count}" type="file" value="${count}" name="n_file">
+// // 						<input id="culturalId${count}" name="c_name${count}" type="hidden" value="${name}"><br>`;
+			
+// 		/* 	c_dataStorage += `<label id="c_num${count}"> &nbsp&nbsp&nbsp&nbsp&nbsp ${count} 번째 문화재</label> 
+// 			                              <button type="button" id="c_Button${count}" name="c_${count}" value="${name}">${name}</button><br>`;
+// 			q_dataStorage = `<label id="q_num${count}">${count}번 문제 :</label> <input id="q_input${count}" name="q_input${count}" type="text" placeholder="문제를 입력해주세요"><br>`;
+// 			h_dataStorage = `<label id="h_num${count}">${count}번 힌트 :</label> <button id="textButton${count}" type="button" value="${count}" name="textButton">텍스트</button> <input id="fileButton${count}" type="file" value="${count}" name="h_file"><br>`;
+// 			n_dataStorage = `<input id="narrationButton${count}" type="file" value="${count}" name="n_file">
+// 								<input id="culturalId${count}" name="c_name${count}" type="hidden" value="${name}"><br>`; */
+								
+								
+		
+			
+			
+// 			//var c_div = $('#c_list');
+			
+
+// 			c_dataStorage += `<label id="c_num${count}"> &nbsp&nbsp&nbsp&nbsp&nbsp ${count} 번째 문화재</label> <button type="button" id="c_Button${count}" name="c_${count}" value="${name}">${name}</button><br>`;
+// 			q_dataStorage = `<label id="q_num${count}">${count}번 문제 :</label> <input id="q_input${count}" name="q_input${count}" type="text" placeholder="문제를 입력해주세요"><br>`;
+// 			h_dataStorage = `<label id="h_num${count}">${count}번 힌트 :</label> <button id="textButton${count}" type="button" value="${count}" name="textButton">텍스트</button> <input id="fileButton${count}" type="file" value="${count}" name="h_file"><br>`;
+// 			n_dataStorage = `<input id="narrationButton${count}" type="file" value="${count}" name="n_file">
+// 								<input id="culturalId${count}" name="c_name${count}" type="hidden" value="${name}"><br>`;
+			
+			
+// 			//var c_div = $('#c_list');
+// 			var add_c_div = $('#add_c_div');
+// 			var add_q_div = $('#add_q_div');
+// 			var add_h_div = $('#add_h_div');
+// 			var add_n_div = $('#add_n_div');
+
+
+// 			//c_div.append(add);
+// 			add_c_div.append(c_dataStorage);
+// 			add_q_div.append(q_dataStorage);
+// 			add_h_div.append(h_dataStorage);
+// 			add_n_div.append(n_dataStorage);
+			
+// 			count = count + 1;
+			
+// 			alert("추가되었습니다.");
+		}
+		
+		
+		$(document).ready(function() {
+
+			// ================================================================================================================================================================
+			
+			////////////////////////////////// 이미 생성되어 있는 html id값 땡겨오는건 전역으로 다 빼두기
+			var final_count;
+			
+			if([[${data}]] == null) {
+				alert("리스트에서 안 넘어옴 => final_count 1로 설정할꺼임");
+				final_count = 1;
+				alert("final_count : " + final_count);
+			}
+			else {
+				alert("리스트에서 넘어옴 => final_count data 길이 + 1 로 설정할꺼임");
+				if(list_data.length == 0) {
+					alert("근데 등록된 문화재가 없어")
+					final_count = 1;
+					alert("final_count : " + final_count);
+				}
+				else {
+					alert(list_data[list_data.length-1].s_order+1);
+					final_count = list_data[list_data.length-1].s_order+1;
+					alert("final_count : " + final_count);
+				}
+			}
+
+			// 적용해야 하는 숫자
+			var count = 0;
+			
+			// 현재 수정하려는 문화재의 순서값 저장할 변수
+			//var now_modify_num = 0;
+			
+			// 문제
+			var q = $("#question");
+			
+			// 나레이션
+			var n = $("#narration");
+			
+			// 가장 밖 div
+			var real_data_parent_div = $("#real_data");
+			
+			// table이 포함되어 잇는 div
+			var table_list = $("#table_list")
+			// ================================================================================================================================================================
+			
+			
+			// ================================================================================================================================================================
+			// modal창이 꺼지면 form 안의 값들을 초기화   ====> 안되다가 <script src="https://code.jquery.com/jquery-3.4.1.js"> 이거 주석처리하니까 작동함
+			$("#exampleModal").on('hidden.bs.modal', function (e) {
+			    console.log('modal close');
+			  $(this).find('form')[0].reset()
+			  $("#h_label").text("선택된 파일 없음");
+			  $("#n_label").text("선택된 파일 없음");
+			});
+			// ================================================================================================================================================================
+
+				
+			// ================================================================================================================================================================
+			// modal창 수동으로 띄우기 위한 함수
+			function manual() {
+				
+				console.log("수동으로 열기 test 지금 jquery");
+				$("#exampleModalLabel").html("스토리 등록");
+				$("#exampleModal").modal('show');
+				
+			}
+			
+			// javascript 함수에 jquery 함수 대입	=> function 밖에 있어야지만 작동
+			c_updateFunc = manual;
+			
+			
+			// ================================================================================================================================================================
+			
+				
+			
+			// ================================================================================================================================================================	
+				// 등록하기 버튼 클릭시 real-data 추가
+				function real_data() {
+					
+					// 문화재당 div를 배당해 div에 넣기
+					//console.log("final_count : " + final_count);
+					alert(final_count);
+					if(document.getElementById("real_data_"+final_count) == null)  {
+						alert("아직 div 안만들어졋음");
+						
+						count = final_count;
+						
+						console.log("test 없음 : " + $("#real_data_"+ count));
+						
+						var add_real_data_second_div = `<div id="real_data_${count}"></div>`;
+						real_data_parent_div.append(add_real_data_second_div);
+						
+						// #real_data div에 추가하기 위해 값 넣을 곳
+						var add_real_data = '';
+						
+						// 숨겨진 div에 다가 다 데이터 세팅해두기
+						// hidden data가 들어있는 div
+						var real_data_div = $("#real_data_"+count);
+						
+						// 실제 문제 데이터 안보이게 셋팅
+						add_real_data += `<input id="q_real_data_${count}" name="q_real_data_${count}" type="hidden" value="">
+											<input id="h_t_real_data_${count}" name="h_t_real_data_${count}" type="hidden" value="">
+											<input id="h_f_real_data_${count}" name="h_file" type="file" value="" onchange="changeText(this)" style="display:none;">
+												<input id="n_real_data_${count}" name="n_file" type="file" value="" onchange="changeText(this)" style="display:none;">
+													<input id="culturalId${count}" name="c_name${count}" type="hidden" value="">
+													<input id="h_fileName${count}" type="hidden" value="">
+													<input id="n_fileName${count}" type="hidden" value="">`;
+
+						// hidden으로 데이터용 div에 추가
+						real_data_div.append(add_real_data);
+						
+					}
+					else {
+						alert("이미 div 있음");
+						console.log("div는 이미 있는데 안에 real_data는 없음");
+					}
+				}
+				
+				add_real_data = real_data;
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================
+			// 힌트 파일선택 버튼 클릭 시
+			$("#h_button").click(function(e) {
+				e.preventDefault();
+				console.log("h_button click");
+				console.log("h_button click, count = " + count);
+				
+				$('#h_f_real_data_'+ count).click();
+			});
+			// ================================================================================================================================================================
+					
+			// ================================================================================================================================================================
+			// 나레이션 파일선택 버튼 클릭 시
+			$("#n_button").click(function(e) {
+				e.preventDefault();
+				console.log("n_button click");
+				console.log("n_button click, count = " + count);
+				$('#n_real_data_'+ count).click();
+			});
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================
+			// label text를 바꿔줄 function()
+			function labelTextChange(obj) {
+				console.log(obj.value);
+				console.log(obj.id);
+				
+				var fileNameList;
+				var fileName;
+
+				if(obj.value != '') {
+					fileNameList = obj.value.split("\\")
+					fileName = fileNameList[fileNameList.length-1];
+				}
+				else {
+					fileName = "선택된 파일 없음";
+				}
+				
+				
+// 				fileName.forEach(function(element) {
+// 					console.log(element);
+// 				});
+
+				if(obj.id == "h_f_real_data_" + count) {
+					console.log("힌트 라벨 고침 : " + fileName);
+					$("#h_label").text(fileName);
+				}
+				else {
+					console.log("나레이션 라벨 고침 : " + fileName);
+					$("#n_label").text(fileName);
+				}
+			}
+			changeText = labelTextChange
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================
+			// 모달창에서 저장을 눌렀을때
+			$("#c_reg").on("click", function() {
+				
+				// 선택된 문화재 이름
+				var name = $("#c_name").val();
+				
+				
+				// 1
+				// 입력값 모두 입력하도록 하기위한 코드
+				if(q.val() == '') {
+					alert("문제를 입력해주세요.");
+					return;
+				}
+				else if($('input[name="check_hint"]:checked').val() == "text" && $("#hint_text").val() == '') {
+					alert("힌트 텍스트를 등록해주세요.");
+					return;
+				}
+				
+				else if($('input[name="check_hint"]:checked').val() == "file" && $("#h_label").text() == ("선택된 파일 없음")) {
+					alert("힌트 파일을 등록해주세요.");
+					return;
+				}
+				else if($("#n_label").text() == ("선택된 파일 없음")) {
+					alert("나레이션 파일을 등록해주세요.");
+					return;
+				}
+				
+				
+				// 2
+				// 문화재 등록일 때 => controller로 몇번 반복해야할지 count 데이터 넘겨줄 hidden 만들기 && 문화재 중복등록 방지
+				var add_count ='';
+				
+				if(final_count == 1 && c_nameList.length == 0) {
+					
+					add_count = `<input id="c_count" name="count" type="hidden" value="${final_count}">`;
+					table_list.append(add_count);
+					
+					c_nameList.push(name);
+					console.log(c_nameList[0]);
+					
+				}
+				// 문화재 등록일때만 해야하는 작업들 모아둔 else if문
+				else if($("#exampleModalLabel").text() == ("스토리 등록")) {
+					$("#c_count").val(final_count);
+					
+					console.log("넣기 전 배열 길이는 : " + c_nameList.length);
+					//c_nameList[c_nameList.length - 1] = name;ch
+					c_nameList.push(name);
+						
+					console.log("넣은 후 배열 길이는 : " + c_nameList.length);
+				}
+
+
+				// table 값 넣을 곳
+				var addTable = '';
+				
+				// 문화재 이름 값 setting
+				$("#culturalId"+count).val(name);
+				
+				// 문제 값
+				var q_value = q.val();
+				console.log("문제 파일 : " + $("#question").val());
+				
+				$("#q_real_data_"+count).val(q_value);
+				
+				var h;
+				
+				console.log($('input[name="check_hint"]:checked').val());
+				
+				if($('input[name="check_hint"]:checked').val() == "text") {
+					alert("텍스트");
+					h = $("#hint_text").val();
+					console.log("힌트 텍스트 : " + $("#hint_text").val());
+					$("#h_t_real_data_"+count).val(h);
+					$("#h_f_real_data_"+count).val('');
+					//$("#h_f_real_data_"+count).remove();
+					
+				}
+				
+				else {
+					alert("파일");
+					h = $("#h_label").text();
+					$("#h_fileName"+count).val(h);
+					$("#h_t_real_data_"+count).val('');
+					//$("#h_t_real_data_"+count).remove();
+					
+// 					var split_h = $("#hint_file").val();
+// 					console.log("힌트 파일 : " +$("#hint_file").val());
+					
+// 					var split_h_data = split_h.split('\\');
+// 					h = split_h_data[split_h_data.length-1];
+					
+					
+					
+// 					add_real_data += `<input id="h_real_data_${count}" type="file" value="${h}" style="display:none;">`;
+					
+// 					real_data_div.append(add_real_data);
+					
+// 					var h_file = document.getElementById("hint_file");
+					
+					
+// 					h_file.setAttribute("onchange", "javascript:document.getElementById('h_real_data_" + count + "').value=this.value");
+
+				}
+				
+				//var n = $("#narration").target.files[0].name;
+				//var n = $("#narration");
+// 				var split_n = n.val();
+				
+				
+				
+// 				console.log(split_n);
+				
+// 				var split_n_data = split_n.split('\\');
+// 				console.log(split_n_data[split_n_data.length-1]);
+				
+// 				// table에 표시할 나레이션 파일 이름 => 주소 제외
+// 				var n_name = split_n_data[split_n_data.length-1];
+				
+// 				console.log(nn.[nn.length-1]); 
+// 				console.log(n.value);
+// 				console.log($("#narration").val());
+// 				console.log(n.currentTarget);
+// 				console.log(n.target.files[0].name);
+					
+				//n = e.target.files[0].name;
+				
+				var n = $("#n_label").text();
+				$("#n_fileName"+count).val(n);
+				
+				addTable = `<tr id="tr${count}">
+								<td>${count}</td>
+								<td>${name}</td>
+								<td>${q_value}</td>
+								<td>${h}</td>
+								<td>${n}</td>
+								<td><button type="button" class="btn btn-outline-secondary btn-sm float-right" id="modify${count}" value="${count}" data-toggle="modal" data-target="#exampleModal">수정</button></td>
+							</tr>`;
+				
+							
+				// 수정일때 table에 해당 tr 비우고 td만 추가
+				if(document.getElementById("tr"+count) != null) {
+					
+					
+					name = c_nameList[count-1]
+					
+					// 수정하려는 tr 비우기
+					console.log("asdfasdfasdf : " + count);
+					$("#tr"+count).empty();
+					
+					var add_td = `<td>${count}</td>
+									<td>${name}</td>
+									<td>${q_value}</td>
+									<td>${h}</td>
+									<td>${n}</td>
+									<td><button type="button" class="btn btn-outline-secondary btn-sm float-right" id="modify${count}" value="${count}" data-toggle="modal" data-target="#exampleModal">수정</button></td>`;
+					
+					$("#tr"+count).append(add_td);
+				}
+				// 추가일때 table에 tr도 새로추가
+				else {
+					table_list.append(addTable);
+				}
+				
+				
+				
+// 				// 모달창 초기화
+// 				$("#question").val('');
+// 				$("#hint_text").val('');
+// 				$("#hint_file").val('');
+// 				$("#narration").val('');
+				
+				if($("#exampleModalLabel").text() == ("스토리 등록")) {
+					final_count += 1;
+				}
+				
+				
+				$(".close").trigger("click");
+			});
+			// ================================================================================================================================================================
+			
+			// ================================================================================================================================================================
+			$("#reset").on("click", function() {
+				
+				console.log("asdfffffffffffffffffffffffffffffff");
+				
+				for(var i=1; i<final_count; i++) {
+					$("#real_data_"+i).remove();
+					$("#tr"+i).remove();
+				}
+				$("#c_count").remove();
+				
+				final_count = 1;
+				c_nameList = [];
+				//location.reload(true);
+
+			});
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================
+			// 수정 버튼을 클릭했을 때
+			$("#table_list").on("click", "button", function(e) {
+				
+				$("#exampleModalLabel").html("스토리 수정");
+				
+				console.log(e.target.value);
+				
+				var num = e.target.value;
+				
+				// 현재 수정하려는 문화재의 순서번호를 전역으로 저장 => 수정을 누르고 저장을 눌렀을때 지금 저장되있는 데이터는 지워주려고
+				count = num;
+				console.log("수정버튼 눌린 값 : " + count);
+				
+				// 수정 클릭 시 현재 문화재 이름 수정할 문화재 이름으로 교체해주기
+				$("#c_name").val(c_nameList[count-1]);
+				
+				// 현재 수정하려는 칼럼의 문제 데이터를 모달창에 setting
+				var q = $("#q_real_data_"+num).val();
+				console.log("수정 버튼 눌었을때 q : " + q);
+				$("#question").val(q);
+				
+				// 현재 수정하려는 칼럼의 힌트 데이터를 모달창에 settting
+				var h = '';
+				
+				// 해당 아이디의 '타입'값을 가져오는 코드
+				//console.log("타입 : " + $("#h_real_data_" + num).attr("type"));
+				
+				// 힌트가 문제라면? 힌트가 파일이라면?
+ 				if($("#h_t_real_data_"+num).val() != '') { // $("#h_real_data_" + num).attr("type") == "hidden"
+ 					
+ 					alert("수정 누른 문화재 힌트는 텍스트");
+					h = $("#h_t_real_data_" + num).val();
+					
+					$("#hint_text").val(h);
+					
+					$('input:radio[name=check_hint][value="text"]').attr('checked', true);
+ 				}
+ 				else {
+ 					alert("수정 누른 문화재 힌트는 파일");
+//  					var h_value = $("#h_f_real_data_"+num).val().split("\\");
+//  					h = h_value[h_value.length-1];
+					h = $("#h_fileName"+count).val();
+					alert(h);
+ 					$("#h_label").text(h);
+ 					$('input:radio[name=check_hint][value="file"]').attr('checked', true);
+ 				}
+				
+//				var n_value = $("#n_real_data_"+num).val().split("\\");
+				var n = '';
+//				n = n_value[n_value.length-1];
+				n = $("#n_fileName"+count).val();
+				$("#n_label").text(n);
+				
+// 				// 수정하려는 div를 비운다.
+// 				$("#real_data_"+ count).empty();
+// 				console.log("수정하려는 div를 비움");	
+				
+// 				// #real_data div에 추가하기 위해 값 넣을 곳
+// 				var add_real_data = '';
+				
+// 				// 숨겨진 div에 다가 다 데이터 세팅해두기
+// 				// hidden data가 들어있는 div
+// 				var real_data_div = $("#real_data_"+count);
+
+// 				//실제 문제 데이터 안보이게 셋팅
+// 					add_real_data += `<input id="q_real_data_${count}" name="q_real_data_${count}" type="hidden" value="">
+// 										<input id="h_t_real_data_${count}" name="h_real_data_${count}" type="hidden" value="">
+// 										<input id="h_f_real_data_${count}" name="h_file" type="file" value="" onchange="changeText(this)">
+// 											<input id="n_real_data_${count}" name="n_file" type="file" value="" onchange="changeText(this)">
+// 												<input id="culturalId${count}" name="c_name${count}" type="hidden" value="">`;
+
+// 				// hidden으로 데이터용 div에 추가
+// 				real_data_div.append(add_real_data);
+				
+			});
+			// ================================================================================================================================================================
+			
+			// ================================================================================================================================================================
+			var form = $("#form");
+			
+			// 스토리관리 저장
+			$("#save").on("click", function(e) {
+				e.preventDefault();
+				
+				//var number = $('#c_count').val();
+				
+				console.log("final_count = " + final_count);
+
+				if($("#s_num").val() == "없음") {
+					alert("스토리를 불러와주세요");
+					return;
+				}
+				
+				if(document.getElementById("c_count") == null) {
+					alert("저장할 내용이 없습니다.");
+					return;
+				}
+				
+				// 저장 클릭 시 힌트가 텍스트면 file 삭제, file이면 텍스트 삭제
+				for(var i=1; i<final_count; i++) {
+					
+					var add_input = '';
+					
+					if(($("#h_t_real_data_"+i).val() == '') && ($("#h_f_real_data_"+i).val() == '') && ($("#n_real_data_"+i).val() == '')) {
+						alert("업데이트 || 힌트 파일 || 힌트파일, 나레이션파일 둘다 그대로임");
+						$("#h_f_real_data_"+i).remove();
+						$("#h_t_real_data_"+i).remove();
+						$("#n_real_data_"+i).remove();
+					}
+					else if($("#h_t_real_data_"+i).val() != '' && $("#h_f_real_data_"+i).val() == '' && $("#n_real_data_"+i).val() == '') {
+						alert("업데이트 || 힌트 텍스트 || 나레이션 수정X");
+						$("#h_f_real_data_"+i).remove();
+						$("#n_real_data_"+i).remove();
+					}
+					else if($("#h_t_real_data_"+i).val() == '' && $("#h_f_real_data_"+i).val() != '' && $("#n_real_data_"+i).val() == '') {
+						alert("업데이트 || 힌트 파일 || 힌트 파일만 수정O");
+						$("#h_t_real_data_"+i).remove();
+						$("#n_real_data_"+i).remove();
+						// 파일
+						add_input = `<input type="hidden" name="h_check${i}">`;
+						$("#real_data_"+i).append(add_input);
+					}
+					else if($("#h_t_real_data_"+i).val() == '' && $("#h_f_real_data_"+i).val() == '' && $("#n_real_data_"+i).val() != '') {
+						alert("업데이트 || 힌트 파일 || 나레이션만 수정O");
+						$("#h_t_real_data_"+i).remove();
+						$("#h_f_real_data_"+i).remove();
+						// 나레이션
+						add_input = `<input type="hidden" name="n_check${i}">`;
+						$("#real_data_"+i).append(add_input);
+					}
+					else if($("#h_t_real_data_"+i).val() != '' && $("#h_f_real_data_"+i).val() == '' && $("#n_real_data_"+i).val() != '') {
+						alert("insert || 힌트 텍스트");
+						$("#h_f_real_data_"+i).remove();
+						// 나레이션
+						add_input = `<input type="hidden" name="n_check${i}">`;
+						$("#real_data_"+i).append(add_input);
+					}
+					
+					else if($("#h_t_real_data_" + i).val() == '' && $("#h_f_real_data_"+i).val() != '' && $("#n_real_data_"+i).val() != '') {
+						alert("insert || 힌트 파일");
+						$("#h_t_real_data_" + i).remove();
+						// 파일, 나레이션
+						add_input = `<input type="hidden" name="h_check${i}">
+									<input type="hidden" name="n_check${i}">`;
+						$("#real_data_"+i).append(add_input);
+					}
+				}
+								
+				console.log("call_check = " + call_check);
+				
+				
+				
+				if(call_check == 0) {
+					console.log("go insert");
+					form.attr("action", "/storymake/insert");
+				}
+				else {
+					console.log("go update");
+					form.attr("action", "/storymake/update")
+				}
+				
+				form.submit(); 
+			});
+			// ================================================================================================================================================================
+			
+			// ================================================================================================================================================================
+				$("#delete").click(function() {
+					var data = {s_num : $("#s_num").val()}
+					$.ajax({
+						url: "/storymake/delete",
+						type: "GET",
+						data: data,
+						success: function() {
+							alert("삭제되었습니다");
+							window.location.href="/storymake/storycall";
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert("삭제 실패");
+							alert(jqXHR.responseText);
+						}
+					});
+				});
+				
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================
+			// if=텍스트힌트를 선택 => 힌트 파일버튼 삭제
+			$("#add_h_div").on('click', 'button', function(e) {
+				
+				
+				// 선택한 버튼의 value 가져오기 (몇번째 버튼인지 => value는 숫자 카운트)
+				var num = e.target.value;
+				
+				// 클릭된 객체의 아이디
+				var id = e.target.id;
+				
+				console.log(id);
+				
+				if(id == 'textButton'+num) {
+					
+					$('#fileButton' + num).remove();
+					$('#textButton' + num).remove();
+					
+					
+					var input = document.createElement('input');
+					
+					input.id = "hintText"+num;
+					input.setAttribute('name', 'hintText'+num);
+					input.setAttribute('type', 'text');
+					
+					// label 옆에 input type:text 추가
+					document.getElementById('h_num'+num).parentElement.insertBefore(input, document.getElementById('h_num'+num).nextElementSibling);
+					
+					console.log("끝");
+					
+					/* var b_add = document.createElement('button');
+					
+					b_add.id = "addButton" + num;
+					b_add.setAttribute('name', 'addButton');
+					b_add.setAttribute('type', 'button');
+					
+					b_add.innerHTML = "추가";
+					
+					document.getElementById('hintText' + num).parentElement.insertBefore(b_add, document.getElementById('hintText' + num).nextElementSibling);
+					
+					$('button[name=addButton]').on('click', function() {
+						alert("asdf");
+					}); */
+					
+				}
+			});
+			// ================================================================================================================================================================
+			
+			// ================================================================================================================================================================
+			//힌트 등록에서 파일등록을 선택시 텍스트 버튼을 없앤다.
+			$('#add_h_div').on('click', 'input[type=file]', function(e) {
+				console.log(e);
+				console.log(e.target);
+				console.log(e.target.attributes[2].value);
+				console.log(e.target.attributes[0].value + "id");
+				
+				// 힌트 파일 버튼이 몇번째 버튼인지 value값에 count를 줬는거 들고오는 방법
+				var num = e.target.attributes[2].value;
+				
+				if(e.target.attributes[0].value == "fileButton" + num) {
+					$('#textButton' + num).remove();
+				}
+			});
+			// ================================================================================================================================================================
+				
+			// ================================================================================================================================================================			
+			// 스토리 불러오기
+			$('#loadStory').on("click", function(e) {
+				e.preventDefault();
+				c_nameList = [];
+				
+				var modalBody = $('#load_modal_body form');
+				
+				$.ajax({
+					url: "/storymake/loadStory",
+					type: "POST",
+					data: null,
+					success: function(data) {
+						// 모달창 초기화
+						modalBody.empty();
+
+						console.log("data :", data, "data size :", data.size);
+						console.log("Success Load Story");
+						// var s_num = new Map();
+						// data : StoryMakeController에서 받아오는 HashMap 데이터
+						for(var key in data) {
+							// _ 앞 구분하여 스토리, 문화재 구분
+							var checking = key.split('_');
+							if(checking[0] == 'story') {
+								console.log(key + " " + data[key].s_num + " " + data[key].s_title + "\n");
+								// /storymake/manage/${data[key].s_num}
+								
+								modalBody.append(`${parseInt(checking[1]) + 1} <a id="story_${data[key].s_num}" 
+								href="/storymake/manage/${data[key].s_num}">${data[key].s_title}</a><br>`);
+								storyLoadClickListener(data[key].s_num, data[key].s_title);	// 여기 이해안감
+							}
+							else if(checking[0] == 'cultural') {
+								console.log(key + " " + data[key].c_num);
+							}
+							else if(checking[0] == 'question') {
+								console.log(key + " " + data[key].q_num);
+							}
+							
+							/*if(data[key].s_num != null) {
+								s_num.set('s_num'+data[key].s_num, data[key].s_num);
+							}*/
+
+							// modalBody.append(key + "\n");
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(jqXHR.responseText);
+						console.log("Failed Load Story");
+					}
+				});
+			});
+			// ================================================================================================================================================================
+			
+			
+			// ================================================================================================================================================================
+			function storyLoadClickListener(s_num, s_title) {
+				$(`#story_${s_num}`).bind("click", function(e) {
+					e.preventDefault();
+					
+					// load 하기 전 div table 다 비우기
+					$("#real_data").empty();
+					$("#table_list").empty();
+					
+					var basic_insert = `<tr>
+			 								<th>순서</th>
+			 								<th>문화재</th>
+			 								<th>문제</th>
+			 								<th>힌트</th>
+			 								<th>나레이션</th>
+			 							</tr>`;
+					$("#table_list").append(basic_insert);
+					
+					// 불러온 data를 넣을 table
+					var table_list = $("#table_list");
+					
+					var storyTitleLabel = $('#storytitle');
+					
+					console.log("Clicked");
+					// var checking_s_num = $(this).attr('href').split('.')[3];
+					console.log("s_num :", s_num);
+
+					$('.close').trigger("click");
+
+					$.ajax({
+						url: "/storymake/manage/" + s_num,
+						type: "POST",
+						data: null,
+						success: function(data) {
+							console.log("data[0] :", data[0]);
+							var loadData = data[0];
+							
+							// 스토리 불러왔으면 call_check = 1
+							//하지만 스토리만 등록해둔걸수도 있기 때문에 length가 0이면 insert일때의 0
+							if(loadData.length != 0) {
+								call_check = 1;
+							}
+							else {
+								call_check = 0;
+							}
+							
+							console.log("insert = 0, update = 1 : " + call_check);
+							
+							// 아래 불러올 data의 id를 지정해주기위해 1로 초기화
+							final_count = 1;
+							
+							// 현재스토리 선택된 스토리 이름으로 바꿔주기
+							storyTitleLabel.empty();
+							storyTitleLabel.append(`${s_title}`);
+							
+							// input type="hidden" id="s_num" value 없다=> 선택된 s_num으로 바꾸기
+							var hidden_id_s_num = $('#s_num');
+							hidden_id_s_num.val(`${s_num}`);
+							
+							for(var key in loadData) {
+								// 스토리를 불러와서 문화재를 추가할수있으니 스토리를 불러올때 문화재 중복 방지체크할 리스트에 문화재 이름 넣어주기
+								c_nameList.push(loadData[key].c_name);
+								
+								console.log("load.s_num :", loadData[key]);
+								console.log("check c_num :", loadData[key].c_num);
+
+								
+								var add = '';
+								var addTable = '';
+								var add_count = '';
+								
+								if(final_count == 1) {
+									add_count = `<input id="c_count" name="count" type="hidden" value="${final_count}">`;
+									table_list.append(add_count);
+								}
+								else {
+// 									var hiddenCount = document.getElementById('c_count');
+				
+// 									hiddenCount.setAttribute('value', count);
+									$("#c_count").val(final_count);
+								}
+				
+								add += `<div id="real_data_${final_count}"><input id="q_real_data_${final_count}" name="q_real_data_${final_count}" type="hidden" value="${loadData[key].q_content}">`;
+								
+								var h = '';
+								
+								if(loadData[key].h_content != null && loadData[key].h_content != "없음") {
+									add += `<input id="h_t_real_data_${final_count}" name="h_t_real_data_${final_count}" type="hidden" value="${loadData[key].h_content}">
+											<input id="h_f_real_data_${final_count}" name="h_file" type="file" value="" onchange="changeText(this)" style="display:none;">`;
+									h = `${loadData[key].h_content}`;
+ 								}
+ 								else {
+ 									add += `<input id="h_t_real_data_${final_count}" name="h_t_real_data_${final_count}" type="hidden" value="">
+ 										<input id="h_f_real_data_${final_count}" name="h_file" type="file" value="" onchange="changeText(this)" style="display:none;">`;
+ 									h = `${loadData[key].h_file}`;
+ 								}
+								
+								add += `<input id="n_real_data_${final_count}" name="n_file" type="file" value="" onchange="changeText(this)"  style="display:none;">
+										<input id="culturalId${final_count}" name="c_name${final_count}" type="hidden" value="${loadData[key].c_name}">
+										<input id="h_fileName${final_count}" type="hidden" value="${loadData[key].h_file}">
+										<input id="n_fileName${final_count}" type="hidden" value="${loadData[key].s_file}">
+										</div>`;
+								
+								addTable = `<tr id="tr${final_count}">
+								 				<td>${final_count}</td>
+								 				<td>${loadData[key].c_name}</td>
+								 				<td>${loadData[key].q_content}</td>
+								 				<td>${h}</td>
+								 				<td>${loadData[key].s_file}</td>
+								 				<td><button type="button" class="btn btn-outline-secondary btn-sm float-right" id="modify${final_count}" value="${final_count}" data-toggle="modal" data-target="#exampleModal">수정</button></td>
+								 			</tr>`;
+								 			
+								real_data_parent_div.append(add);
+								table_list.append(addTable);
+								
+								
+								final_count += 1;
+
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert(jqXHR.responseText);
+							console.log("Failed Load Story");
+						}
+					});
+					
+// 					var add_c_div = $('#add_c_div');
+// 					var add_q_div = $('#add_q_div');
+// 					var add_h_div = $('#add_h_div');
+// 					var add_n_div = $('#add_n_div');
+					
+// 					add_c_div.empty();
+// 					add_q_div.empty();
+// 					add_h_div.empty();
+// 					add_n_div.empty();
+					
+// 					// 불러온 data를 넣을 table
+// 					var reg_list = $("#reg_list");
+					
+// 					var storyTitleLabel = $('#storytitle');
+					
+// 					console.log("Clicked");
+// 					// var checking_s_num = $(this).attr('href').split('.')[3];
+// 					console.log("s_num :", s_num);
+
+// 					$('.close').trigger("click");
+
+// 					$.ajax({
+// 						url: "/storymake/manage/" + s_num,
+// 						type: "POST",
+// 						data: null,
+// 						success: function(data) {
+// 							console.log("data[0] :", data[0]);
+// 							var loadData = data[0];
+							
+// 							// 스토리 불러왔으면 call_check = 1
+// 							//하지만 스토리만 등록해둔걸수도 있기 때문에 length가 0이면 insert일때의 0
+// 							if(loadData.length != 0) {
+// 								call_check = 1;
+// 							}
+// 							console.log("insert = 0, update = 1 : " + call_check);
+							
+// 							//
+// 							count = 1;
+							
+// 							// 현재스토리 선택된 스토리 이름으로 바꿔주기
+// 							storyTitleLabel.empty();
+// 							storyTitleLabel.append(`${s_title}`);
+							
+// 							// input type="hidden" id="s_num" value 없다=> 선택된 s_num으로 바꾸기
+// 							var hidden_id_s_num = $('#s_num');
+// 							hidden_id_s_num.val(`${s_num}`);
+							
+// 							for(var key in loadData) {
+// 								// 스토리를 불러와서 문화재를 추가할수있으니 스토리를 불러올때 문화재 중복 방지체크할 리스트에 문화재 이름 넣어주기
+// 								c_nameList.push(loadData[key].c_name);
+								
+// 								console.log("load.s_num :", loadData[key]);
+// 								console.log("check c_num :", loadData[key].c_num);
+								
+// 								var c_dataStorage = '';
+// 								var q_dataStorage = '';
+// 								var h_dataStorage = '';
+// 								var n_dataStorage = '';
+								
+// // 								dataStorage = `<input style="margin-left: 100px;" type="text" value="${loadData[key].c_name}"> 
+// // 								<input style="margin-left: 200px;" type="text" value="${loadData[key].q_content}"> 
+// // 								<input style="margin-left: 200px;" type="text" value="${loadData[key].h_content}">
+// // 								<input style="margin-left: 200px;" type="text" value="${loadData[key].s_file}"><br><br>`;
+
+// 								if(count == 1) {
+// 									c_dataStorage = `<input id="c_count" name="count" type="hidden" value="${count}">`;
+// 								}
+// 								else {
+// 									var hiddenCount = document.getElementById('c_count');
+				
+// 									hiddenCount.setAttribute('value', count);
+// 								}
+								
+// 								c_dataStorage += `<label id="c_num${count}"> ${count} 번째 문화재</label> <button type="button" id="c_Button${count}" name="c_${count}" value="${loadData[key].c_name}">${loadData[key].c_name}</button><br>`
+// 								q_dataStorage = `<label id="q_num${count}">${count}번 문제 :</label> <input id="q_input${count}" name="q_input${count}" type="text" placeholder="문제를 입력해주세요" value="${loadData[key].q_content}"><br>`
+								
+// 								if(loadData[key].h_content != null && loadData[key].h_content != "없음") {
+// 									h_dataStorage = `<label id="h_num${count}">${count}번 힌트 :</label> <input id="hintText${count}" type="text" name="hintText${count}" value="${loadData[key].h_content}"><br>`;
+// 								}
+// 								else {
+// 									h_dataStorage = `<label id="h_num${count}">${count}번 힌트 :</label> <input id="fileButton${count}" type="file" name="h_file" value="${count}" value="${loadData[key].h_file}"><br>`;
+// 								}
+								
+// 								n_dataStorage = `<input id="narrationButton${count}" type="file" value="${count}" name="n_file" text="${loadData[key].s_file}">
+// 								<input id="culturalId${count}" name="c_name${count}" type="hidden" value="${loadData[key].c_name}"><br>`;
+								
+// 								count += 1;
+// 								//loadDiv.append(dataStorage);
+// 								add_c_div.append(c_dataStorage);
+// 								add_q_div.append(q_dataStorage);
+// 								add_h_div.append(h_dataStorage);
+// 								add_n_div.append(n_dataStorage);
+// 							}
+// 						},
+// 						error: function(jqXHR, textStatus, errorThrown) {
+// 							alert(jqXHR.responseText);
+// 							console.log("Failed Load Story");
+// 						}
+// 					});
+				});
+			}
+		
+		});
+		// ================================================================================================================================================================
+			
+	</script>
+</html>

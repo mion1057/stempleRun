@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+  <!--      <item
+            android:id="@+id/nav_story_area"
+            android:title="@string/menu_story" />
+        <item
+            android:id="@+id/nav_bingo"
+            android:title="@string/menu_bingo" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:title="@string/menu_gallery" />
+        <item
+            android:id="@+id/nav_hotspot"
+            android:title="@string/menu_hotspot" />
+        <item
+            android:id="@+id/nav_review"
+            android:title="@string/menu_review" />
+        <item
+            android:id="@+id/nav_idea"
+            android:title="@string/menu_idea" />-->
+        <item
+            android:id="@+id/nav_login"
+            android:title="로그아웃" />
+
+        <item android:id="@+id/nav_signup"
+            android:title="회원가입"/>
+    </group>
+</menu>

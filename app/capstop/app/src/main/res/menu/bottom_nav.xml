@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+        <item
+            android:id="@+id/nav_story_area"
+            android:title="@string/menu_story"
+            android:icon="@drawable/ic_story"
+            />
+        <item
+            android:id="@+id/nav_bingo"
+            android:title="@string/menu_bingo"
+            android:icon="@drawable/ic_bingo"/>
+        <item
+            android:id="@+id/nav_gallery"
+            android:title="@string/menu_gallery"
+            android:icon="@drawable/ic_picture"/>
+        <item
+            android:id="@+id/nav_hotspot"
+            android:title="@string/menu_hotspot"
+            android:icon="@drawable/ic_hotspot"/>
+        <item
+            android:id="@+id/nav_review"
+            android:title="@string/menu_review"
+            android:icon="@drawable/ic_review"/>
+        <!--<item
+            android:id="@+id/nav_idea"
+            android:title="@string/menu_idea" />-->
+
+</menu>
